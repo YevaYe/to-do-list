@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>TODO List</h1>
+    <a href="{% url 'list:task-create' %}" class="btn btn-primary">Add task</a>
+    
+    {% if task_list %}
+        <ul class="list-group mt-3">
+            {% for task in task_list %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3>{{ task.content }}</h3>
+                        <span class="badge {% if task.status == 'done' %}badge-success{% else %}badge-danger{% endif %}">{{ task.status }}</span>
+                        <p>Created: {{ task.created_at|date:"F j, Y, g:i a" }}</p>
+                        {% if task.deadline %}
+                            <p>Deadline: {{ task.deadline|date:"F j, Y, g:i a" }}</p>
+                        {% endif %}
+                        <p>Tags: 
+                            {% for tag in task.tags.all %}
+                                {{ tag.name }}
+                                {% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        <a href="{% url 'list:task-update' pk=task.pk %}" class="btn btn-secondary">Update</a>
+                        <a href="{% url 'list:task-delete' pk=task.pk %}" class="btn btn-danger">Delete</a>
+                    </div>
+                    <div>
+                        <form action="{% url 'list:task-toggle-status' task.pk %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn {% if task.status == "done" %}btn-warning{% else %}btn-success{% endif %}">
+                                {% if task.status == "done" %}Undo{% else %}Complete{% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>There are no tasks.</p>
+    {% endif %}
+{% endblock %}
