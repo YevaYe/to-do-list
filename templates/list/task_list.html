@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>TODO List</h1>
+    <a href="{% url 'list:task-create' %}" class="btn btn-primary">Add task</a>
+    
+    {% if task_list %}
+        <ul class="list-group">
+            {% for task in task_list %}
+                <li class="list-group-item">
+                    <h3>{{ task.content }}</h3>
+                    <span class="badge {% if task.status == 'done' %}badge-success{% else %}badge-danger{% endif %}">{{ task.status }}</span>
+                    <p>Created: {{ task.created_at|date:"F j, Y, g:i a" }}</p>
+                    <p>Deadline: {{ task.deadline|date:"F j, Y, g:i a" }}</p>
+                    <p>Tags: 
+                        {% for tag in task.tags.all %}
+                            {{ tag }}
+                            {% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+                    <a href="{% url 'task_update' task.pk %}" class="btn btn-secondary">Update</a>
+                    <a href="{% url 'task_delete' task.pk %}" class="btn btn-danger">Delete</a>
+                    <form action="{% url 'task_toggle_status' task.pk %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn {% if task.status == 'done' %}btn-warning{% else %}btn-success{% endif %}">
+                            {% if task.status == 'done' %}Undo{% else %}Complete{% endif %}
+                        </button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>There are no tasks.</p>
+    {% endif %}
+{% endblock %}
