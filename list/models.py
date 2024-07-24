@@ -10,8 +10,8 @@ class Task(models.Model):
     )
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    deadline = models.DateTimeField()
-    status = models.BooleanField(choices=STATUS_CHOICES, default="not done")
+    deadline = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=8, choices=STATUS_CHOICES, default="not done")
     tags = models.ManyToManyField("Tag")
 
     class Meta:
@@ -25,3 +25,6 @@ class Task(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
