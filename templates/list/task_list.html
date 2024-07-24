@@ -2,7 +2,7 @@
 
 {% block content %}
     <h1>TODO List</h1>
-    <a href="{% url 'list:task_create' %}" class="btn btn-primary">Add task</a>
+    <a href="{% url 'list:task-create' %}" class="btn btn-primary">Add task</a>
     
     {% if task_list %}
         <ul class="list-group mt-3">
@@ -21,14 +21,14 @@
                                 {% if not forloop.last %}, {% endif %}
                             {% endfor %}
                         </p>
-                        <a href="{% url 'list:task_update' pk=task.pk %}" class="btn btn-secondary">Update</a>
-                        <a href="{% url 'list:task_delete' pk=task.pk %}" class="btn btn-danger">Delete</a>
+                        <a href="{% url 'list:task-update' pk=task.pk %}" class="btn btn-secondary">Update</a>
+                        <a href="{% url 'list:task-delete' pk=task.pk %}" class="btn btn-danger">Delete</a>
                     </div>
                     <div>
-                        <form action="{% url 'list:task_toggle_status' task.pk %}" method="post">
+                        <form action="{% url 'list:task-toggle-status' task.pk %}" method="post">
                             {% csrf_token %}
-                            <button type="submit" class="btn {% if task.status == 'done' %}btn-warning{% else %}btn-success{% endif %}">
-                                {% if task.status == 'done' %}Undo{% else %}Complete{% endif %}
+                            <button type="submit" class="btn {% if task.status == "done" %}btn-warning{% else %}btn-success{% endif %}">
+                                {% if task.status == "done" %}Undo{% else %}Complete{% endif %}
                             </button>
                         </form>
                     </div>

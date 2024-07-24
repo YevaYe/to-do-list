@@ -15,7 +15,7 @@ class Task(models.Model):
     tags = models.ManyToManyField("Tag")
 
     class Meta:
-        ordering = ["status"]
+        ordering = ["-status"]
 
     def save(self, *args, **kwargs):
         if self.status == "done" and not self.deadline:

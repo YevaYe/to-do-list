@@ -23,7 +23,7 @@ class TaskCreateView(generic.CreateView):
         task = form.save(commit=False)
         task.status = "not done"
         task.save()
-        form.save_m2m()  # Зберігаємо зв'язок з тегами
+        form.save_m2m()
         return super().form_valid(form)
 
 
@@ -64,9 +64,9 @@ class TagDeleteView(generic.edit.DeleteView):
 
 def toggle_task_status(request, pk):
     task = Task.objects.get(pk=pk)
-    if task.status == 'done':
-        task.status = 'not done'
+    if task.status == "done":
+        task.status = "not done"
     else:
-        task.status = 'done'
+        task.status = "done"
     task.save()
-    return redirect('list:task_list')
+    return redirect("list:task-list")
