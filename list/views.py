@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -15,7 +16,15 @@ class TaskListView(generic.ListView):
 class TaskCreateView(generic.CreateView):
     model = Task
     form_class = TaskForm
+    template_name = "list/task_form.html"
     success_url = reverse_lazy("list:task-list")
+
+    def form_valid(self, form):
+        task = form.save(commit=False)
+        task.status = "not done"
+        task.save()
+        form.save_m2m()  # Зберігаємо зв'язок з тегами
+        return super().form_valid(form)
 
 
 class TaskUpdateView(generic.edit.UpdateView):
@@ -51,3 +60,13 @@ class TagUpdateView(generic.edit.UpdateView):
 class TagDeleteView(generic.edit.DeleteView):
     model = Tag
     success_url = reverse_lazy("list:tag-list")
+
+
+def toggle_task_status(request, pk):
+    task = Task.objects.get(pk=pk)
+    if task.status == 'done':
+        task.status = 'not done'
+    else:
+        task.status = 'done'
+    task.save()
+    return redirect('list:task_list')
